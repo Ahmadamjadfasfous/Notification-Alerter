@@ -135,7 +135,7 @@ fun AppSelectionScreen(
                             }
 
                             Icon(
-                                Icons.Default.ChevronRight,
+                                Icons.Default.ArrowForward,
                                 contentDescription = "Select app",
                                 tint = MaterialTheme.colorScheme.outline
                             )
