@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Alarm
-import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,9 +32,10 @@ class ActiveAlertActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         wakeAndUnlockScreen()
 
-        val appName = intent.getStringExtra(AlarmForegroundService.EXTRA_APP_NAME) ?: "Smart Alerter"
-        val title = intent.getStringExtra(AlarmForegroundService.EXTRA_TITLE) ?: "High Priority Alert"
-        val body = intent.getStringExtra(AlarmForegroundService.EXTRA_BODY) ?: ""
+        // قراءة النصوص القادمة من الإشعار مع وضع نصوص افتراضية في حال كانت المتغيرات غير معرفة بالخدمة لمنع الخطأ
+        val appName = intent.getStringExtra("EXTRA_APP_NAME") ?: intent.getStringExtra("appName") ?: "Discord / App Notification"
+        val title = intent.getStringExtra("EXTRA_TITLE") ?: intent.getStringExtra("title") ?: "High Priority Alert"
+        val body = intent.getStringExtra("EXTRA_BODY") ?: intent.getStringExtra("body") ?: "لديك رسالة هامة جديدة تتوافق مع الشروط المخصصة."
 
         setContent {
             ActiveAlertOverlay(
@@ -66,10 +67,9 @@ class ActiveAlertActivity : ComponentActivity() {
     }
 
     private fun dismissAlarm() {
-        val dismissIntent = Intent(this, AlarmForegroundService::class.java).apply {
-            action = AlarmForegroundService.ACTION_DISMISS_ALARM
-        }
-        startService(dismissIntent)
+        val dismissIntent = Intent(this, AlarmForegroundService::class.java)
+        // محاولة إيقاف الخدمة مباشرة لضمان كتم الصوت فورا
+        stopService(dismissIntent)
         finish()
     }
 }
@@ -81,14 +81,15 @@ fun ActiveAlertOverlay(
     body: String,
     onDismiss: () -> Unit
 ) {
-    val infiniteTransition = rememberInfiniteTransition()
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 0.92f,
         targetValue = 1.22f,
         animationSpec = infiniteRepeatable(
             animation = tween(650, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
-        )
+        ),
+        label = "scale"
     )
 
     Surface(
@@ -119,8 +120,9 @@ fun ActiveAlertOverlay(
                             .background(Color(0xFFE53935), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
+                        // استبدال الأيقونة المفقودة بأيقونة الإشعارات المدمجة والجميلة
                         Icon(
-                            Icons.Default.Alarm,
+                            Icons.Filled.Notifications,
                             contentDescription = "Active Alert",
                             tint = Color.White,
                             modifier = Modifier.size(56.dp)
@@ -181,7 +183,8 @@ fun ActiveAlertOverlay(
                     .height(68.dp),
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.VolumeOff, contentDescription = null, modifier = Modifier.size(28.dp))
+                // استبدال أيقونة كتم الصوت بأيقونة NotificationsOff المدمجة والمضمونة
+                Icon(Icons.Filled.NotificationsOff, contentDescription = null, modifier = Modifier.size(28.dp))
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     "SILENCE RINGTONE",
