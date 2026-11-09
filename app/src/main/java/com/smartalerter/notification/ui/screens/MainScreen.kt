@@ -237,14 +237,14 @@ tint = MaterialTheme.colorScheme.primary
 )
 Spacer(modifier = Modifier.width(6.dp))
 Text(
-text = ""${rule.keywordOrContact}"",
+text = if (rule.keywordOrContact.isBlank()) "(any notification)" else "\"${rule.keywordOrContact}\"",
 fontWeight = FontWeight.ExtraBold,
 style = MaterialTheme.typography.bodyMedium
 )
 }
 SuggestionChip(
 onClick = {},
-label = { Text(rule.matchType.name, style = MaterialTheme.typography.labelSmall) }
+label = { Text(rule.matchType, style = MaterialTheme.typography.labelSmall) }
 )
 }
 }
@@ -280,7 +280,7 @@ tint = MaterialTheme.colorScheme.primary
 )
 Spacer(modifier = Modifier.width(4.dp))
 Text(
-text = if (rule.vibrationEnabled) rule.vibrationPattern.name else "OFF",
+text = if (rule.vibrationEnabled) rule.vibrationPattern else "OFF",
 style = MaterialTheme.typography.bodySmall,
 color = MaterialTheme.colorScheme.onSurfaceVariant
 )

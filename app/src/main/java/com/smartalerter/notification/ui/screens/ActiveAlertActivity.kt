@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smartalerter.notification.service.AlarmForegroundService
 
 class ActiveAlertActivity : ComponentActivity() {
@@ -33,9 +34,9 @@ class ActiveAlertActivity : ComponentActivity() {
         wakeAndUnlockScreen()
 
         // قراءة النصوص القادمة من الإشعار مع وضع نصوص افتراضية في حال كانت المتغيرات غير معرفة بالخدمة لمنع الخطأ
-        val appName = intent.getStringExtra("EXTRA_APP_NAME") ?: intent.getStringExtra("appName") ?: "Discord / App Notification"
-        val title = intent.getStringExtra("EXTRA_TITLE") ?: intent.getStringExtra("title") ?: "High Priority Alert"
-        val body = intent.getStringExtra("EXTRA_BODY") ?: intent.getStringExtra("body") ?: "لديك رسالة هامة جديدة تتوافق مع الشروط المخصصة."
+        val appName = intent.getStringExtra(AlarmForegroundService.EXTRA_APP_NAME) ?: "Smart Alerter"
+        val title = intent.getStringExtra(AlarmForegroundService.EXTRA_TITLE) ?: "High Priority Alert"
+        val body = intent.getStringExtra(AlarmForegroundService.EXTRA_BODY) ?: ""
 
         setContent {
             ActiveAlertOverlay(
@@ -67,9 +68,10 @@ class ActiveAlertActivity : ComponentActivity() {
     }
 
     private fun dismissAlarm() {
-        val dismissIntent = Intent(this, AlarmForegroundService::class.java)
-        // محاولة إيقاف الخدمة مباشرة لضمان كتم الصوت فورا
-        stopService(dismissIntent)
+        val dismissIntent = Intent(this, AlarmForegroundService::class.java).apply {
+            action = AlarmForegroundService.ACTION_DISMISS_ALARM
+        }
+        startService(dismissIntent)
         finish()
     }
 }
@@ -137,7 +139,7 @@ fun ActiveAlertOverlay(
                     color = Color(0xFFFF5252),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleSmall,
-                    letterSpacing = 2.dp
+                    letterSpacing = 2.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

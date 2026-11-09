@@ -26,3 +26,14 @@ data class RuleEntity(
     val isEnabled: Boolean = true,
     val createdAt: Long = System.currentTimeMillis()
 )
+
+
+// Room stores these as Strings; these helpers convert them safely to enums.
+fun RuleEntity.matchTypeEnum(): MatchType =
+    runCatching { MatchType.valueOf(matchType) }.getOrDefault(MatchType.CONTAINS)
+
+fun RuleEntity.matchTargetEnum(): MatchTarget =
+    runCatching { MatchTarget.valueOf(matchTarget) }.getOrDefault(MatchTarget.ANY)
+
+fun RuleEntity.vibrationPatternEnum(): VibrationPattern =
+    runCatching { VibrationPattern.valueOf(vibrationPattern) }.getOrDefault(VibrationPattern.SOS)

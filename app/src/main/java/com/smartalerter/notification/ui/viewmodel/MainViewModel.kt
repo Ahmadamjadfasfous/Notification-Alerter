@@ -54,7 +54,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun loadInstalledApps() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingApps = true) }
-            val apps = AppListFetcher.getInstalledUserApps(getApplication())
+            val apps = AppListFetcher.getInstalledUserApps(getApplication<Application>())
             val currentRules = _uiState.value.rules
             val appsWithCounts = recalculateAppRuleCounts(apps, currentRules)
 

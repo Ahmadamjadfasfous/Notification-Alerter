@@ -10,6 +10,8 @@ import com.smartalerter.notification.data.db.AppDatabase
 import com.smartalerter.notification.data.model.MatchTarget
 import com.smartalerter.notification.data.model.MatchType
 import com.smartalerter.notification.data.model.RuleEntity
+import com.smartalerter.notification.data.model.matchTargetEnum
+import com.smartalerter.notification.data.model.matchTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -69,7 +71,7 @@ class NotificationInterceptorService : NotificationListenerService() {
         if (pattern.isEmpty()) return true // Match all notifications if no keyword set
 
         val checkText = { targetText: String ->
-            when (rule.matchType) {
+            when (rule.matchTypeEnum()) {
                 MatchType.CONTAINS -> {
                     if (rule.isCaseSensitive) targetText.contains(pattern)
                     else targetText.contains(pattern, ignoreCase = true)
@@ -90,7 +92,7 @@ class NotificationInterceptorService : NotificationListenerService() {
             }
         }
 
-        return when (rule.matchTarget) {
+        return when (rule.matchTargetEnum()) {
             MatchTarget.TITLE_ONLY -> checkText(title)
             MatchTarget.BODY_ONLY -> checkText(body)
             MatchTarget.ANY -> checkText(title) || checkText(body)
@@ -105,7 +107,10 @@ class NotificationInterceptorService : NotificationListenerService() {
             putExtra(AlarmForegroundService.EXTRA_TITLE, title)
             putExtra(AlarmForegroundService.EXTRA_BODY, body)
             putExtra(AlarmForegroundService.EXTRA_SOUND_URI, rule.soundUri)
-            putExtra(AlarmForegroundService.EXTRA_VIBRATION_PATTERN, rule.vibrationPattern.name)
+            putExtra(
+                AlarmForegroundService.EXTRA_VIBRATION_PATTERN,
+                if (rule.vibrationEnabled) rule.vibrationPattern else "NONE"
+            )
             putExtra(AlarmForegroundService.EXTRA_BYPASS_DND, rule.bypassSilentMode)
             putExtra(AlarmForegroundService.EXTRA_VOLUME, rule.volumePercent)
         }

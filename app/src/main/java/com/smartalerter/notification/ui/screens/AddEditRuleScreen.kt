@@ -21,6 +21,10 @@ import com.smartalerter.notification.data.model.MatchTarget
 import com.smartalerter.notification.data.model.MatchType
 import com.smartalerter.notification.data.model.RuleEntity
 import com.smartalerter.notification.data.model.VibrationPattern
+import com.smartalerter.notification.data.model.matchTargetEnum
+import com.smartalerter.notification.data.model.matchTypeEnum
+import com.smartalerter.notification.data.model.vibrationPatternEnum
+import androidx.compose.foundation.horizontalScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +38,8 @@ fun AddEditRuleScreen(
     val context = LocalContext.current
 
     var keyword by remember { mutableStateOf(existingRule?.keywordOrContact ?: "") }
-    var matchType by remember { mutableStateOf(existingRule?.matchType ?: MatchType.CONTAINS) }
-    var matchTarget by remember { mutableStateOf(existingRule?.matchTarget ?: MatchTarget.ANY) }
+    var matchType by remember { mutableStateOf(existingRule?.matchTypeEnum() ?: MatchType.CONTAINS) }
+    var matchTarget by remember { mutableStateOf(existingRule?.matchTargetEnum() ?: MatchTarget.ANY) }
     var isCaseSensitive by remember { mutableStateOf(existingRule?.isCaseSensitive ?: false) }
     
     var soundUriStr by remember { mutableStateOf(existingRule?.soundUri) }
@@ -44,10 +48,10 @@ fun AddEditRuleScreen(
     var volumePercent by remember { mutableFloatStateOf((existingRule?.volumePercent ?: 100).toFloat()) }
 
     var vibrationEnabled by remember { mutableStateOf(existingRule?.vibrationEnabled ?: true) }
-    var vibrationPattern by remember { mutableStateOf(existingRule?.vibrationPattern ?: VibrationPattern.SOS) }
+    var vibrationPattern by remember { mutableStateOf(existingRule?.vibrationPatternEnum() ?: VibrationPattern.SOS) }
 
     val mediaPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         uri?.let {
             soundUriStr = it.toString()
@@ -130,7 +134,10 @@ fun AddEditRuleScreen(
                     )
 
                     Text("Match Type:", style = MaterialTheme.typography.labelMedium)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         MatchType.values().forEach { type ->
                             FilterChip(
                                 selected = matchType == type,
@@ -141,7 +148,10 @@ fun AddEditRuleScreen(
                     }
 
                     Text("Search Target:", style = MaterialTheme.typography.labelMedium)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         listOf(
                             MatchTarget.ANY to "Title & Body",
                             MatchTarget.TITLE_ONLY to "Title (Sender)",
@@ -192,7 +202,7 @@ fun AddEditRuleScreen(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Button(onClick = { mediaPickerLauncher.launch("audio/*") }) {
+                            Button(onClick = { mediaPickerLauncher.launch(arrayOf("audio/*")) }) {
                                 Icon(Icons.Default.Folder, contentDescription = null)
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text("Pick Song")
@@ -237,7 +247,10 @@ Switch(checked = vibrationEnabled, onCheckedChange = { vibrationEnabled = it })
 }
 if (vibrationEnabled) {
 Text("Vibration Pattern:", style = MaterialTheme.typography.labelMedium)
-Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
 listOf(
 VibrationPattern.SOS,
 VibrationPattern.RAPID_PULSE,
@@ -265,15 +278,15 @@ keywordOrContact = keyword
 appName = appName,
 packageName = packageName,
 keywordOrContact = keyword,
-matchType = matchType,
-matchTarget = matchTarget,
+matchType = matchType.name,
+matchTarget = matchTarget.name,
 isCaseSensitive = isCaseSensitive,
 soundUri = soundUriStr,
 soundTitle = soundTitle,
 bypassSilentMode = bypassSilentMode,
 volumePercent = volumePercent.toInt(),
 vibrationEnabled = vibrationEnabled,
-vibrationPattern = vibrationPattern,
+vibrationPattern = vibrationPattern.name,
 isEnabled = true
 )
 onSaveRule(rule)

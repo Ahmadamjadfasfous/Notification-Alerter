@@ -58,7 +58,7 @@ class AlarmForegroundService : Service() {
             startVibrating(vibrationPattern)
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun playAlarmSound(soundUriStr: String?, bypassDnd: Boolean, volumePercent: Int) {
