@@ -94,7 +94,7 @@ fun AddEditRuleScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        Icons.Default.Apps,
+                        Icons.Default.List,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.size(32.dp)
@@ -193,7 +193,7 @@ fun AddEditRuleScreen(
                                 )
                             }
                             Button(onClick = { mediaPickerLauncher.launch("audio/*") }) {
-                                Icon(Icons.Default.FolderOpen, contentDescription = null)
+                                Icon(Icons.Default.Folder, contentDescription = null)
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text("Pick Song")
                             }
@@ -209,93 +209,88 @@ fun AddEditRuleScreen(
                             Text("Bypass Silent & Do-Not-Disturb", fontWeight = FontWeight.SemiBold)
                             Text(
                                 "Uses STREAM_ALARM to ring at maximum volume",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        Switch(checked = bypassSilentMode, onCheckedChange = { bypassSilentMode = it })
-                    }
-
-                    Column {
-                        Text("Alarm Volume: ${volumePercent.toInt()}%", style = MaterialTheme.typography.bodySmall)
-                        Slider(
-                            value = volumePercent,
-                            onValueChange = { volumePercent = it },
-                            valueRange = 10f..100f
-                        )
-                    }
-                }
-            }
-
-            Card(shape = RoundedCornerShape(16.dp)) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("3. Vibration Engine", fontWeight = FontWeight.Bold)
-                        Switch(checked = vibrationEnabled, onCheckedChange = { vibrationEnabled = it })
-                    }
-
-                    if (vibrationEnabled) {
-                        Text("Vibration Pattern:", style = MaterialTheme.typography.labelMedium)
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            listOf(
-                                VibrationPattern.SOS,
-                                VibrationPattern.RAPID_PULSE,
-                                VibrationPattern.CONTINUOUS,
-                                VibrationPattern.HEARTBEAT
-                            ).forEach { pat ->
-                                FilterChip(
-                                    selected = vibrationPattern == pat,
-                                    onClick = { vibrationPattern = pat },
-                                    label = { Text(pat.name) }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = {
-                    val rule = (existingRule ?: RuleEntity(
-                        appName = appName,
-                        packageName = packageName,
-                        keywordOrContact = keyword
-                    )).copy(
-                        appName = appName,
-                        packageName = packageName,
-                        keywordOrContact = keyword,
-                        matchType = matchType,
-                        matchTarget = matchTarget,
-                        isCaseSensitive = isCaseSensitive,
-                        soundUri = soundUriStr,
-                        soundTitle = soundTitle,
-                        bypassSilentMode = bypassSilentMode,
-                        volumePercent = volumePercent.toInt(),
-                        vibrationEnabled = vibrationEnabled,
-                        vibrationPattern = vibrationPattern,
-                        isEnabled = true
-                    )
-                    onSaveRule(rule)
-                    onNavigateBack()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(54.dp),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Icon(Icons.Default.Save, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    if (existingRule != null) "Update Alert Rule" else "Save Alert Rule",
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-    }
+style = MaterialTheme.typography.bodySmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant
+)
+}
+Switch(checked = bypassSilentMode, onCheckedChange = { bypassSilentMode = it })
+}
+Column {
+Text("Alarm Volume: ${volumePercent.toInt()}%", style = MaterialTheme.typography.bodySmall)
+Slider(
+value = volumePercent,
+onValueChange = { volumePercent = it },
+valueRange = 10f..100f
+)
+}
+}
+}
+Card(shape = RoundedCornerShape(16.dp)) {
+Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+Row(
+modifier = Modifier.fillMaxWidth(),
+horizontalArrangement = Arrangement.SpaceBetween,
+verticalAlignment = Alignment.CenterVertically
+) {
+Text("3. Vibration Engine", fontWeight = FontWeight.Bold)
+Switch(checked = vibrationEnabled, onCheckedChange = { vibrationEnabled = it })
+}
+if (vibrationEnabled) {
+Text("Vibration Pattern:", style = MaterialTheme.typography.labelMedium)
+Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+listOf(
+VibrationPattern.SOS,
+VibrationPattern.RAPID_PULSE,
+VibrationPattern.CONTINUOUS,
+VibrationPattern.HEARTBEAT
+).forEach { pat ->
+FilterChip(
+selected = vibrationPattern == pat,
+onClick = { vibrationPattern = pat },
+label = { Text(pat.name) }
+)
+}
+}
+}
+}
+}
+Spacer(modifier = Modifier.height(8.dp))
+Button(
+onClick = {
+val rule = (existingRule ?: RuleEntity(
+appName = appName,
+packageName = packageName,
+keywordOrContact = keyword
+)).copy(
+appName = appName,
+packageName = packageName,
+keywordOrContact = keyword,
+matchType = matchType,
+matchTarget = matchTarget,
+isCaseSensitive = isCaseSensitive,
+soundUri = soundUriStr,
+soundTitle = soundTitle,
+bypassSilentMode = bypassSilentMode,
+volumePercent = volumePercent.toInt(),
+vibrationEnabled = vibrationEnabled,
+vibrationPattern = vibrationPattern,
+isEnabled = true
+)
+onSaveRule(rule)
+onNavigateBack()
+},
+modifier = Modifier
+.fillMaxWidth()
+.height(54.dp),
+shape = RoundedCornerShape(16.dp)
+) {
+Icon(Icons.Default.Check, contentDescription = null)
+Spacer(modifier = Modifier.width(8.dp))
+Text(
+if (existingRule != null) "Update Alert Rule" else "Save Alert Rule",
+fontWeight = FontWeight.Bold
+)
+}
+}
+}
 }
