@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart Notification Alerter</string>
+    <string name="interceptor_service_label">Smart Notification Interceptor</string>
+</resources>
