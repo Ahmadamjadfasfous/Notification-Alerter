@@ -135,7 +135,7 @@ fun MainScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            Icons.Default.NotificationsActive,
+                            Icons.Default.Notifications,
                             contentDescription = null,
                             modifier = Modifier.size(72.dp),
                             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
@@ -203,134 +203,127 @@ fun MainScreen(
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.Bold,
                                             maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Text(
-                                            text = rule.packageName,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    }
-                                    Switch(
-                                        checked = rule.isEnabled,
-                                        onCheckedChange = { isChecked -> viewModel.toggleRule(rule.id, isChecked) }
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(12.dp))
-
-                                Surface(
-                                    color = MaterialTheme.colorScheme.surface,
-                                    shape = RoundedCornerShape(12.dp),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(
-                                                Icons.Default.FilterList,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(16.dp),
-                                                tint = MaterialTheme.colorScheme.primary
-                                            )
-                                            Spacer(modifier = Modifier.width(6.dp))
-                                            Text(
-                                                text = "\"${rule.keywordOrContact}\"",
-                                                fontWeight = FontWeight.ExtraBold,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
-                                        }
-                                        SuggestionChip(
-                                            onClick = {},
-                                            label = { Text(rule.matchType.name, style = MaterialTheme.typography.labelSmall) }
-                                        )
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            Icons.Default.MusicNote,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(14.dp),
-                                            tint = MaterialTheme.colorScheme.error
-                                        )
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text(
-                                            text = rule.soundTitle,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier.widthIn(max = 160.dp)
-                                        )
-                                    }
-
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            Icons.Default.Vibration,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(14.dp),
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text(
-                                            text = if (rule.vibrationEnabled) rule.vibrationPattern.name else "OFF",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        IconButton(
-                                            onClick = { ruleToDelete = rule },
-                                            modifier = Modifier.size(24.dp)
-                                        ) {
-                                            Icon(
-                                                Icons.Default.DeleteOutline,
-                                                contentDescription = "Delete Rule",
-                                                tint = MaterialTheme.colorScheme.outline
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (ruleToDelete != null) {
-        AlertDialog(
-            onDismissRequest = { ruleToDelete = null },
-            icon = { Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
-            title = { Text("Delete Alert Rule?") },
-            text = { Text("Remove the emergency alert rule for '${ruleToDelete?.keywordOrContact}' (${ruleToDelete?.appName})?") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        ruleToDelete?.let { viewModel.deleteRule(it) }
-                        ruleToDelete = null
-                    },
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
-                ) {
-                    Text("Delete", fontWeight = FontWeight.Bold)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { ruleToDelete = null }) { Text("Cancel") }
-            }
-        )
-    }
+                                            overflow = TextOverflow.Ellipsis)
+Text(
+text = rule.packageName,
+style = MaterialTheme.typography.bodySmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant,
+maxLines = 1,
+overflow = TextOverflow.Ellipsis
+)
+}
+Switch(
+checked = rule.isEnabled,
+onCheckedChange = { isChecked -> viewModel.toggleRule(rule.id, isChecked) }
+)
+}
+Spacer(modifier = Modifier.height(12.dp))
+Surface(
+color = MaterialTheme.colorScheme.surface,
+shape = RoundedCornerShape(12.dp),
+modifier = Modifier.fillMaxWidth()
+) {
+Row(
+modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+verticalAlignment = Alignment.CenterVertically,
+horizontalArrangement = Arrangement.SpaceBetween
+) {
+Row(verticalAlignment = Alignment.CenterVertically) {
+Icon(
+Icons.Default.Search,
+contentDescription = null,
+modifier = Modifier.size(16.dp),
+tint = MaterialTheme.colorScheme.primary
+)
+Spacer(modifier = Modifier.width(6.dp))
+Text(
+text = ""${rule.keywordOrContact}"",
+fontWeight = FontWeight.ExtraBold,
+style = MaterialTheme.typography.bodyMedium
+)
+}
+SuggestionChip(
+onClick = {},
+label = { Text(rule.matchType.name, style = MaterialTheme.typography.labelSmall) }
+)
+}
+}
+Spacer(modifier = Modifier.height(10.dp))
+Row(
+modifier = Modifier.fillMaxWidth(),
+horizontalArrangement = Arrangement.SpaceBetween,
+verticalAlignment = Alignment.CenterVertically
+) {
+Row(verticalAlignment = Alignment.CenterVertically) {
+Icon(
+Icons.Default.PlayArrow,
+contentDescription = null,
+modifier = Modifier.size(14.dp),
+tint = MaterialTheme.colorScheme.error
+)
+Spacer(modifier = Modifier.width(4.dp))
+Text(
+text = rule.soundTitle,
+style = MaterialTheme.typography.bodySmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant,
+maxLines = 1,
+overflow = TextOverflow.Ellipsis,
+modifier = Modifier.widthIn(max = 160.dp)
+)
+}
+Row(verticalAlignment = Alignment.CenterVertically) {
+Icon(
+Icons.Default.Build,
+contentDescription = null,
+modifier = Modifier.size(14.dp),
+tint = MaterialTheme.colorScheme.primary
+)
+Spacer(modifier = Modifier.width(4.dp))
+Text(
+text = if (rule.vibrationEnabled) rule.vibrationPattern.name else "OFF",
+style = MaterialTheme.typography.bodySmall,
+color = MaterialTheme.colorScheme.onSurfaceVariant
+)
+Spacer(modifier = Modifier.width(8.dp))
+IconButton(
+onClick = { ruleToDelete = rule },
+modifier = Modifier.size(24.dp)
+) {
+Icon(
+Icons.Default.Delete,
+contentDescription = "Delete Rule",
+tint = MaterialTheme.colorScheme.outline
+)
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+if (ruleToDelete != null) {
+AlertDialog(
+onDismissRequest = { ruleToDelete = null },
+icon = { Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
+title = { Text("Delete Alert Rule?") },
+text = { Text("Remove the emergency alert rule for '${ruleToDelete?.keywordOrContact}' (${ruleToDelete?.appName})?") },
+confirmButton = {
+TextButton(
+onClick = {
+ruleToDelete?.let { viewModel.deleteRule(it) }
+ruleToDelete = null
+},
+colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+) {
+Text("Delete", fontWeight = FontWeight.Bold)
+}
+},
+dismissButton = {
+TextButton(onClick = { ruleToDelete = null }) { Text("Cancel") }
+}
+)
+}
 }
